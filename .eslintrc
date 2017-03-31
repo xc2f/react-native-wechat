@@ -1,0 +1,20 @@
+{
+    "env": {
+        "browser": true,
+        "node": true,
+        "commonjs": true
+    },
+    "plugins": [
+        "react"
+    ],
+    "extends": ["eslint:recommended", "plugin:react/recommended"],
+
+    "parser": "babel-eslint"
+    // "parserOptions": {
+    //     "sourceType": "module",
+    //     "allowImportExportEverywhere": false
+    // }
+
+    // =========================== from web ===========================
+    // http://json.schemastore.org/eslintrc
+}
