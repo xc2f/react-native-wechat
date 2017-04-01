@@ -51,7 +51,7 @@ export default class ChatPage extends Component {
             <NavigationBar
               hasBack={true}
               hasUserIcon={true}
-              subTitle={data.title}
+              subTitle={data.userName}
               handleBackPress={this._onBackPress.bind(this)}
             />
           </View>

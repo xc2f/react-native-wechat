@@ -1,21 +1,52 @@
 import React, { Component } from 'react';
-import { View, Text, ListView, TouchableHighlight, Image, StyleSheet } from 'react-native';
-
-import JsonData from '../config/data.json';
+import { View, Text, StyleSheet, AsyncStorage } from 'react-native';
 
 import ChatPage from '../components/ChatPage';
+import ListViewForHome from './ListViewForHome';
+
+
+const FETCH_URL = 'http://192.168.0.104:8080/WeChat/findall/find.spring';
 
 
 export default class Home extends Component {
   constructor(props) {
     super(props)
-    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
-      dataSource: ds.cloneWithRows(JsonData),
+      data: [],
+      dataReceived: false
     };
-    this._renderRow = this._renderRow.bind(this);
-    this._renderRowContent = this._renderRowContent.bind(this);
-    // this._rowClick = this._rowClick.bind(this);
+    this._rowClick = this._rowClick.bind(this);
+  }
+
+  componentWillMount() {
+    this._fetchData();
+  }
+
+  _fetchData() {
+    fetch(FETCH_URL)
+      .then( (res) =>
+        res.json()
+      )
+      .then( resJson => {
+        this.setState({
+          data: resJson,
+          dataReceived: true
+        })
+
+        // save storage
+        storage.save({
+          key: 'userData',
+          rawData: {
+            data: resJson
+          }
+        })
+
+      }
+      )
+      .catch( err => {
+        console.warn(err)
+      })
+      .done()
   }
 
   _rowClick(data) {
@@ -28,106 +59,64 @@ export default class Home extends Component {
   }
 
 
-  _renderRow(rowData, rowID) {
-    return (
-      <TouchableHighlight
-        key={rowID}
-        underlayColor='#ccc'
-        onPress={this._rowClick.bind(this, rowData)}
-      >
-        {this._renderRowContent(rowData)}
-      </TouchableHighlight>
-    )
-  }
+  render() {
+    const { data, dataReceived } = this.state;
 
-  _renderRowContent(rowData) {
-    return (
-      <View style={styles.rowContainer}>
-        <View style={styles.avatar}>
-          <Image
-            source={require('../images/user.jpg')}
-            style={{width: '100%', height: '100%'}}
+    if (data && dataReceived) {
+      return (
+        <View style={styles.listContainer}>
+          <ListViewForHome
+            data={data}
+            handleRowClick={this._rowClick}
           />
         </View>
-        <View style={styles.info}>
-          <View style={styles.info1}>
-            <Text style={styles.title}>{rowData.title}</Text>
-            <Text style={styles.date}>{rowData.date}</Text>
-          </View>
-          <View style={styles.info2}>
-            <Text style={styles.desc}>{rowData.desc}</Text>
-          </View>
+      )
+    } else {
+      return (
+        <View style={styles.listContainer}>
+          <Text
+            style={{
+              alignSelf: 'center',
+              fontSize: 30,
+              fontWeight: 'bold',
+              paddingTop: 30,
+            }}
+          >Loading...</Text>
         </View>
-      </View>
-    )
-  }
+      )
+    }
 
-  _renderSeparator(separatorKey) {
-    return (
-      <View
-        style={{
-          borderBottomWidth: 1,
-          borderBottomColor: '#eee',
-        }}
-        key={'separator' + Math.random() }
-      />
-    )
-  }
-  render() {
-    return (
+
+    /*return (
       <View style={styles.listContainer}>
-        <ListView
-          dataSource={this.state.dataSource}
-          renderRow={this._renderRow}
-          renderSeparator={this._renderSeparator}
-        />
+        {dataReceived
+          ?
+          (
+            <ListViewForHome
+              data={data}
+              handleRowClick={this._rowClick}
+            />
+          )
+          :
+          (
+          <Text
+            style={{
+              alignSelf: 'center',
+              fontSize: 30,
+              fontWeight: 'bold',
+              paddingTop: 30,
+            }}
+          >Loading...</Text>
+          )
+        }
       </View>
-    )
+    )*/
+
   }
 }
 
 const styles = StyleSheet.create({
   listContainer: {
-    paddingBottom: 7,
+    // paddingBottom: 7,
   },
-  rowContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    paddingTop: 7,
-    paddingRight: 15,
-    paddingBottom: 7,
-    paddingLeft: 13,
-    height: 65,
-  },
-  avatar: {
-    flex: 1,
-  },
-  info: {
-    flex: 5,
-    paddingLeft: 13,
-  },
-  info1: {
-    flex: 1,
-    flexDirection: 'row',
-  },
-  info2: {
-    flex: 1,
-  },
-  title: {
-    flex: 5,
-    alignSelf: 'center',
-    fontSize: 17,
-    color: '#555',
-  },
-  date: {
-    flex: 5,
-    textAlign: 'right',
-    fontSize: 12,
-    color: '#aaa'
-  },
-  desc: {
-    color: '#999',
-    fontSize: 14,
-    paddingTop: 5,
-  }
 })
