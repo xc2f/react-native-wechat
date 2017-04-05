@@ -7,8 +7,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import Home from './components/Home';
 import Contacts from './components/Contacts'
-import Compass from './components/Home'
-import Me from './components/Home'
+import Compass from './components/Compass'
+import Me from './components/Me'
 
 import SearchPage from './components/SearchPage';
 

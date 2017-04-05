@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     paddingRight: 15,
     paddingBottom: 7,
     paddingLeft: 13,
-    height: 65,
+    height: 70,
   },
   avatar: {
     flex: 1,

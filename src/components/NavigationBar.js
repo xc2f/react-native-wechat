@@ -41,9 +41,9 @@ export default class NavigationBar extends Component {
         <View style={styles.navTitle}>
           {messageCount
             ?
-            <Text style={styles.navText}>哈哈({messageCount})</Text>
+            <Text style={styles.navText}>Wc({messageCount})</Text>
             :
-            <Text style={styles.navText}>哈哈</Text>
+            <Text style={styles.navText}>Wc</Text>
           }
         </View>
       )
@@ -60,7 +60,7 @@ export default class NavigationBar extends Component {
               onPress={this.props.handleSearchPress}
               underlayColor='#000'
             >
-              <Icon name='ios-search' size={30} color='white' />
+              <Icon name='ios-search' size={25} color='white' />
             </TouchableHighlight>
           </View>
           <View style={[styles.navIconWrap]}>
@@ -68,7 +68,7 @@ export default class NavigationBar extends Component {
               style={styles.navIcon}
               underlayColor='#000'
             >
-              <Icon name='md-add' size={33} color='white' />
+              <Icon name='md-add' size={27} color='white' />
             </TouchableHighlight>
           </View>
         </View>
