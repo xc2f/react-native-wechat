@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { View, Text, ListView, TouchableHighlight, Image, StyleSheet, AsyncStorage } from 'react-native';
 
+import pinyin from '../config/pinyinUtil';
+import ContactSort from './ContactSort';
 
 const dataBolb = [];
 
@@ -21,9 +23,11 @@ export default class Contacts extends Component {
         }
       ]
     }
+
+    this._sortContacts = this._sortContacts.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
     storage.load({
       key: 'userData'
     })
@@ -31,11 +35,41 @@ export default class Contacts extends Component {
       this.setState({
         dataSource: this._ds.cloneWithRows(res.data)
       })
+
+    // 调用排序处理程序
+    this._sortContacts(res.data);
+
     })
     .catch( err => {
       console.log('Several error occured: ' + err.message );
     })
     .done();
+  }
+
+  _sortContacts(contacts) {
+    const hanzi2pinyin = [];
+    contacts.map((item, idx) => {
+      hanzi2pinyin.push({
+        idx: idx,
+        firstLetter: pinyin.getFirstLetter(item.userName),
+      });
+    })
+
+    console.log(hanzi2pinyin);
+    const result = [];
+    hanzi2pinyin.map((item, idx) => {
+      let firstLetter = item.firstLetter.trim().slice(0, 1).toUpperCase();
+      switch (firstLetter) {
+        case 'A':
+          result['A'].push(
+            idx
+          )
+          break;
+        // TODO B C D...
+        default:
+          break;
+      }
+    })
   }
 
   _renderHeader() {
@@ -88,12 +122,13 @@ export default class Contacts extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <ListView
+        {/*<ListView
           dataSource={this.state.dataSource}
           renderHeader={this._renderHeader.bind(this)}
           renderRow={this._renderRow.bind(this)}
           enableEmptySections={true}
-        />
+        />*/}
+        <ContactSort />
       </View>
     )
   }
