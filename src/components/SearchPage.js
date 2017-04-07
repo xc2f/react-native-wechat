@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { TextInput, View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { TextInput, View, Text, TouchableOpacity, StyleSheet, ScrollView, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 // import NavigationBar from './NavigationBar
+import Statusbar from './StatusBar';
 
 export default class SearchPage extends Component {
   constructor(props) {
@@ -17,7 +18,9 @@ export default class SearchPage extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView>
+        <Statusbar />
+        <ScrollView style={{
+        }}>
           <View style={styles.searchBar}>
             <View style={styles.back}>
               <TouchableOpacity
@@ -45,9 +48,8 @@ export default class SearchPage extends Component {
               </View>
             </View>
           </View>
-          <View style={styles.body}></View>
-
         </ScrollView>
+          <View style={styles.body}></View>
       </View>
     )
   }
@@ -59,10 +61,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   searchBar: {
-    flex: 1,
+    // flex: 1,
     backgroundColor: '#313436',
     flexDirection: 'row',
     paddingLeft: 15,
+    paddingTop: Platform.OS === 'ios' ? 20 : 17,
   },
   back: {
     flex: 1,

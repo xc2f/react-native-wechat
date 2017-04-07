@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Text, StyleSheet, AsyncStorage } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, AsyncStorage, Platform } from 'react-native';
 
 import NavigationBar from './components/NavigationBar';
 import TabNavigator from 'react-native-tab-navigator';
@@ -11,6 +11,8 @@ import Compass from './components/Compass'
 import Me from './components/Me'
 
 import SearchPage from './components/SearchPage';
+
+import Statusbar from './components/StatusBar';
 
 
 import Storage from 'react-native-storage';
@@ -81,6 +83,7 @@ export default class MainPage extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <Statusbar />
         <View style={styles.nav}>
           <NavigationBar
             navigator={this.props.navigator}
@@ -109,6 +112,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   nav: {
+    paddingTop: Platform.OS === 'ios' ? 20 : 17,
     flex: 1,
     backgroundColor: '#313436',
   },

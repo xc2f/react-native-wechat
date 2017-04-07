@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, StyleSheet, TextInput, TouchableHighlight } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TextInput, TouchableHighlight, Platform } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Ionicons'
 import NavigationBar from './NavigationBar';
+import Statusbar from './StatusBar';
 
 export default class ChatPage extends Component {
   constructor(props) {
@@ -42,11 +43,13 @@ export default class ChatPage extends Component {
       })
   }
 
+
   render() {
     const { data } = this.props;
 
     return (
         <View style={styles.container}>
+          <Statusbar />
           <View style={styles.nav}>
             <NavigationBar
               hasBack={true}
@@ -59,12 +62,21 @@ export default class ChatPage extends Component {
             <View style={styles.body}>
               <ScrollView
                 keyboardDismissMode='on-drag'
+                contentOffset={{
+                  x: 0,
+                  y: 100
+                }}
+                style={{
+                  height: 1000,
+                  backgroundColor: '#eee',
+                  flex: 1,
+                }}
               >
                 <Text
                   style={{
-                    height: 1000,
                     backgroundColor: '#eee',
                     textAlign: 'center',
+                    height: 800,
                   }}
                 >any body here?</Text>
               </ScrollView>
@@ -133,6 +145,8 @@ const styles = StyleSheet.create({
   },
   nav: {
     flex: 1,
+    paddingTop: Platform.OS === 'ios' ? 20 : 17,
+    backgroundColor: '#313436',
   },
   main: {
     flex: 11,

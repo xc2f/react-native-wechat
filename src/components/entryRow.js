@@ -9,7 +9,7 @@ export default class EntryRow extends Component {
     this.state = {
       // 如果从这里取fresh，值改变后不会刷新ui
       // fresh:  this.props.fresh || false,
-      freshImg: '',
+      freshImg: 'xx',
     }
   }
 

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 
 
 import Row from './entryRow';
+import FriendsCircle from './FriendsCircle';
 
 class Compass extends Component {
   constructor(props) {
@@ -13,17 +14,19 @@ class Compass extends Component {
 
   }
 
-  _onClick2(Component) {
+  _onClick(Component) {
 
     // 为什么无效？
     if (Component === 'friendsCircle') {
       this.setState({
         fresh: false,
       });
+
+      this.props.navigator.push({
+        component: FriendsCircle,
+      })
     }
   }
-    _onClick(Component) {
-    }
 
 
   render() {
@@ -36,7 +39,7 @@ class Compass extends Component {
             title='朋友圈'
             iconName='ios-aperture-outline'
             iconColor='#4B32C3'
-            handleClick={this._onClick2.bind(this, 'friendsCircle')}
+            handleClick={this._onClick.bind(this, 'friendsCircle')}
             />
         </View>
         <View style={[styles.section, styles.section2]}>
