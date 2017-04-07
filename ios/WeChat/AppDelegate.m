@@ -20,7 +20,7 @@
 
   [[RCTBundleURLProvider sharedSettings] setDefaults];
   #if DEBUG
-  [[RCTBundleURLProvider sharedSettings] setJsLocation:@"192.168.0.102"];
+  [[RCTBundleURLProvider sharedSettings] setJsLocation:@"localhost"];
   #endif
 
   jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];
