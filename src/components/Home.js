@@ -5,7 +5,8 @@ import ChatPage from '../components/ChatPage';
 import ListViewForHome from './ListViewForHome';
 
 
-const FETCH_URL = 'http://192.168.0.104:8080/WeChat/findall/find.spring';
+// const FETCH_URL = 'http://192.168.0.104:8080/WeChat/findall/find.spring';
+const FETCH_URL = 'http://127.0.0.1:3000';
 
 
 export default class Home extends Component {

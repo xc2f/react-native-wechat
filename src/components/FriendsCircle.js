@@ -1,11 +1,22 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, Platform, ScrollView, Image, Modal, TouchableWithoutFeedback, TouchableHighlight } from 'react-native';
+
 import ImagePicker from 'react-native-image-picker';
 
 
 import Statusbar from './StatusBar';
 import NavigationBar from './NavigationBar';
 
+var options = {
+  title: '选择照片',
+  takePhotoButtonTitle: '拍照',
+  chooseFromLibraryButtonTitle: '相册',
+  cancelButtonTitle: '取消',
+  storageOptions: {
+    skipBackup: true,
+    path: 'images'
+  }
+};
 
 class FriendsCircle extends Component {
   constructor(props) {
@@ -13,7 +24,9 @@ class FriendsCircle extends Component {
     this.state = {
       bannerImg: 'xx',
       modalVisible: false,
+      avatarSource: null,
     }
+    // this._callIamgePicker.bind(this);
   }
 
 
@@ -38,50 +51,55 @@ class FriendsCircle extends Component {
   }
 
   _changeBanner() {
+    clearTimeout(this._timeout);
     this.setState({
       modalVisible: true,
     })
 
   }
 
-_callIamgePicker() {
-  console.log('111');
-  var options = {
-  title: 'Select Avatar',
-  customButtons: [
-    {name: 'fb', title: 'Choose Photo from Facebook'},
-  ],
-  storageOptions: {
-    skipBackup: true,
-    path: 'images'
-  }
-};
-
-ImagePicker.showImagePicker(options, (response) => {
-  console.log('Response = ', response);
-
-  if (response.didCancel) {
-    console.log('User cancelled image picker');
-  }
-  else if (response.error) {
-    console.log('ImagePicker Error: ', response.error);
-  }
-  else if (response.customButton) {
-    console.log('User tapped custom button: ', response.customButton);
-  }
-  else {
-    let source = { uri: response.uri };
-
-    // You can also display the image using data:
-    // let source = { uri: 'data:image/jpeg;base64,' + response.data };
-
+  _selectBannerImg() {
     this.setState({
-      avatarSource: source
+      modalVisible: false,
+    })
+
+  /*modal关闭后调起图片上传服务*/
+  // ios下，modal关掉后立即调用image picker，界面会卡住，最好不用modal
+  // 这样处理偶然还是会有问题
+    this._timeout = setTimeout(function() {
+      // if (this.state.modalVisible === false) {
+        this._callIamgePicker();
+      // }
+    }.bind(this), 500);
+  }
+
+
+  _callIamgePicker() {
+    ImagePicker.showImagePicker(options, (response) => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled photo picker');
+      }
+      else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      }
+      else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      }
+      else {
+        let source = { uri: response.uri };
+
+        // You can also display the image using data:
+        // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+
+        this.setState({
+          avatarSource: source,
+        });
+      }
     });
   }
-});
 
-}
   render() {
     return (
       <View style={styles.container}>
@@ -91,26 +109,26 @@ ImagePicker.showImagePicker(options, (response) => {
           animationType='fade'
           transparent={true}
           visible={this.state.modalVisible}
-          onRequestClose={()=>{'你有什么用'}}
+          onRequestClose={()=>{
+            '你有什么用';
+            {/*this.setState({
+              modalVisible: false,
+            })*/}
+          }}
           style={styles.modal}
         >
           <View style={styles.modalWrap}>
             <View style={styles.modalShade}></View>
             <TouchableHighlight
-              onPress={() => {
-                this.setState({
-                  modalVisible: false,
-                })
-
-                {/*modal关闭后调起图片上传服务*/}
-                this._callIamgePicker();
-              }}
+              onPress={this._selectBannerImg.bind(this)}
               underlayColor='#ddd'
               style={styles.modalTouch}
             >
-              <Text
-                style={styles.modalText}
-              >更换相册封面</Text>
+              <View>
+                <Text
+                  style={styles.modalText}
+                >更换相册封面</Text>
+              </View>
             </TouchableHighlight>
             <View style={styles.modalShade}></View>
           </View>
