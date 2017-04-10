@@ -9,7 +9,7 @@ export default class NavigationBar extends Component {
   }
 
   render() {
-    const { hasBack, navTitle, subTitle, messageCount, hasSearchWithAdd, hasUserIcon } = this.props;
+    const { hasBack, navTitle, subTitle, messageCount, hasSearchWithAdd, hasUserIcon, hasCamera } = this.props;
 
     // 左边是否有返回
     let leftSection = null;
@@ -75,8 +75,18 @@ export default class NavigationBar extends Component {
       )
     } else if (hasUserIcon) {
         rightSection = (
-          <View style={styles.userIcon}>
+          <View style={styles.singleIcon}>
             <Icon name='ios-person' size={33} color='white' />
+          </View>
+        )
+    } else if (hasCamera) {
+        rightSection = (
+          <View style={styles.singleIcon}>
+            <TouchableHighlight
+              onPress={this.props.handleIconPress}
+            >
+              <Icon name='ios-camera' size={33} color='white' />
+            </TouchableHighlight>
           </View>
         )
     }
@@ -153,7 +163,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'white'
   },
-  userIcon: {
+  singleIcon: {
     alignItems: 'flex-end'
   }
 })

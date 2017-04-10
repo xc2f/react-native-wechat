@@ -6,6 +6,7 @@ import ImagePicker from 'react-native-image-picker';
 
 import Statusbar from './StatusBar';
 import NavigationBar from './NavigationBar';
+import FriendsCircleModal from './FriendsCircleModal';
 
 var options = {
   title: '选择照片',
@@ -50,12 +51,25 @@ class FriendsCircle extends Component {
     this.props.navigator.pop();
   }
 
+  _onCameraIconPress() {
+    this.props.navigator.push({
+      component: FriendsCircleModal,
+    })
+  }
+
   _changeBanner() {
     clearTimeout(this._timeout);
     this.setState({
       modalVisible: true,
     })
 
+  }
+
+  // 点击上下空白区域隐藏modal
+  _hiddenModal() {
+    this.setState({
+      modalVisible: false,
+    })
   }
 
   _selectBannerImg() {
@@ -94,7 +108,7 @@ class FriendsCircle extends Component {
         // let source = { uri: 'data:image/jpeg;base64,' + response.data };
 
         this.setState({
-          avatarSource: source,
+          avatarSource: source.uri,
         });
       }
     });
@@ -105,42 +119,21 @@ class FriendsCircle extends Component {
       <View style={styles.container}>
 
         {/*modal*/}
-        <Modal
-          animationType='fade'
-          transparent={true}
+        <FriendsCircleModal
           visible={this.state.modalVisible}
-          onRequestClose={()=>{
-            '你有什么用';
-            {/*this.setState({
-              modalVisible: false,
-            })*/}
-          }}
-          style={styles.modal}
-        >
-          <View style={styles.modalWrap}>
-            <View style={styles.modalShade}></View>
-            <TouchableHighlight
-              onPress={this._selectBannerImg.bind(this)}
-              underlayColor='#ddd'
-              style={styles.modalTouch}
-            >
-              <View>
-                <Text
-                  style={styles.modalText}
-                >更换相册封面</Text>
-              </View>
-            </TouchableHighlight>
-            <View style={styles.modalShade}></View>
-          </View>
-        </Modal>
+          hiddenModal={this._hiddenModal.bind(this)}
+          changeBanner={this._selectBannerImg.bind(this)}
+        />
 
 
-       <Statusbar />
+        <Statusbar />
         <View style={styles.nav}>
           <NavigationBar
             hasBack={true}
             subTitle='朋友圈'
             handleBackPress={this._onBackPress.bind(this)}
+            handleIconPress={this._onCameraIconPress.bind(this)}
+            hasCamera={true}
           />
         </View>
         <View style={styles.body}>
@@ -151,18 +144,20 @@ class FriendsCircle extends Component {
               >
                 <Image
                   source={{
-                    uri: this.state.bannerImg
+                    uri: this.state.avatarSource || this.state.bannerImg
                   }}
                   resizeMode='cover'
                   style={styles.bannerImg}
                 />
               </TouchableWithoutFeedback>
-              <Image
-                source={{
-                  uri: this.state.bannerImg
-                }}
-                style={styles.avatar}
-              />
+              <View style={styles.avatarWrap}>
+                <Image
+                  source={{
+                    uri: this.state.bannerImg
+                  }}
+                  style={styles.avatar}
+                />
+              </View>
             </View>
           </ScrollView>
         </View>
@@ -183,7 +178,7 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 11,
-    backgroundColor: '#000',
+    // backgroundColor: '#000',
   },
   bannerImgWrap: {
     height: 200,
@@ -193,13 +188,21 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  avatar: {
+  avatarWrap: {
+    borderWidth: 1,
+    borderColor: '#aaa',
     width: 70,
     height: 70,
     position: 'absolute',
     right: 10,
     bottom: -30,
-    zIndex: 999,
+    padding: 1,
+    backgroundColor: '#eee',
+  },
+  avatar: {
+    width: '100%',
+    height: '100%',
+    // zIndex: 999,
   },
   modalWrap: {
     backgroundColor: 'rgba(0, 0, 0, .4)',
@@ -207,13 +210,18 @@ const styles = StyleSheet.create({
     // alignSelf: 'center',
     // height: 30,
     // top: '50%',
-    // flexDirection: 'row'
+    // flexDirection: 'row',
     // width: '50%',
     flex: 1,
     alignItems: 'center',
   },
   modalShade: {
+    width: '100%',
     flex: 10,
+  },
+  shadeTouch: {
+    width: '100%',
+    height: '100%',
   },
   modalTouch: {
     backgroundColor: '#fff',
@@ -221,6 +229,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 3,
   },
   modalText: {
     // color: '#fff',

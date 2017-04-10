@@ -6,8 +6,17 @@ import ListViewForHome from './ListViewForHome';
 
 
 // const FETCH_URL = 'http://192.168.0.104:8080/WeChat/findall/find.spring';
-const FETCH_URL = 'http://127.0.0.1:3000';
+// const FETCH_URL = 'http://localhost:17685/index.html';
+const FETCH_URL = 'http://192.168.0.102:3000';
 
+// var myHeaders = new Headers({
+//   'Content-Type': 'text/html'
+// });
+
+
+// var myInit = { method: 'GET',
+//                headers: myHeaders,
+//                cache: 'default' };
 
 export default class Home extends Component {
   constructor(props) {
@@ -25,10 +34,11 @@ export default class Home extends Component {
 
   _fetchData() {
     fetch(FETCH_URL)
-      .then( (res) =>
-        res.json()
-      )
+      .then( (res) => {
+        return res.json()
+      })
       .then( resJson => {
+
         this.setState({
           data: resJson,
           dataReceived: true
