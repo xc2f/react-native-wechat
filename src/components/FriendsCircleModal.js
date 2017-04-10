@@ -27,6 +27,7 @@ class FriendsCircle extends Component {
         >
           <View style={styles.modalWrap}>
 
+            {/*上部空白*/}
             <View
               style={styles.modalShade}
             >
@@ -39,19 +40,31 @@ class FriendsCircle extends Component {
               </TouchableWithoutFeedback>
             </View>
 
-
-            <TouchableHighlight
-              underlayColor='#ddd'
+            <View
               style={styles.modalTouch}
-              onPress={this.props.changeBanner}
             >
-              <View>
-                <Text
-                  style={styles.modalText}
-                >更换相册封面</Text>
-              </View>
-            </TouchableHighlight>
+            {
+              this.props.elements.map((item, idx) => {
 
+                return (
+                  <TouchableHighlight
+                    underlayColor='#ddd'
+                    onPress={item.handle.bind(null, idx)}
+                    key={idx}
+                    style={styles.touchContent}
+                  >
+                    <View>
+                      <Text
+                        style={styles.modalText}
+                      >{item.title}</Text>
+                    </View>
+                  </TouchableHighlight>
+                )
+              })
+            }
+            </View>
+
+            {/*下部空白*/}
             <View
               style={styles.modalShade}
             >
@@ -103,6 +116,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 3,
+  },
+  touchContent: {
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   modalText: {
     // color: '#fff',

@@ -26,8 +26,11 @@ class FriendsCircle extends Component {
       bannerImg: 'xx',
       modalVisible: false,
       avatarSource: null,
+      changeBannerModal: false,
+      postNewsModal: false,
     }
     // this._callIamgePicker.bind(this);
+    this._selectBannerImg = this._selectBannerImg.bind(this);
   }
 
 
@@ -52,15 +55,18 @@ class FriendsCircle extends Component {
   }
 
   _onCameraIconPress() {
-    this.props.navigator.push({
-      component: FriendsCircleModal,
+    this.setState({
+      modalVisible: true,
+      postNewsModal: true,
     })
   }
 
+  // 点击顶部banner
   _changeBanner() {
     clearTimeout(this._timeout);
     this.setState({
       modalVisible: true,
+      changeBannerModal: true,
     })
 
   }
@@ -69,10 +75,14 @@ class FriendsCircle extends Component {
   _hiddenModal() {
     this.setState({
       modalVisible: false,
+      changeBannerModal: false,
+      postNewsModal: false,
     })
   }
 
-  _selectBannerImg() {
+
+  // 更换相册封面
+  _selectBannerImg(idx) {
     this.setState({
       modalVisible: false,
     })
@@ -119,12 +129,33 @@ class FriendsCircle extends Component {
       <View style={styles.container}>
 
         {/*modal*/}
+        {/*顶部banner*/}
         <FriendsCircleModal
-          visible={this.state.modalVisible}
+          visible={this.state.modalVisible && this.state.changeBannerModal}
           hiddenModal={this._hiddenModal.bind(this)}
-          changeBanner={this._selectBannerImg.bind(this)}
+          elements={[
+            {
+              title: '更换相册封面',
+              handle: this._selectBannerImg,
+            }
+          ]}
         />
 
+        {/*发布新动态*/}
+        <FriendsCircleModal
+          visible={this.state.modalVisible && this.state.postNewsModal}
+          hiddenModal={this._hiddenModal.bind(this)}
+          elements={[
+            {
+              title: '拍摄',
+              handle: ()=>{},
+            },
+            {
+              title: '从相册选择',
+              handle: ()=>{},
+            }
+          ]}
+        />
 
         <Statusbar />
         <View style={styles.nav}>
