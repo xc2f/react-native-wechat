@@ -9,7 +9,7 @@ export default class NavigationBar extends Component {
   }
 
   render() {
-    const { hasBack, navTitle, subTitle, messageCount, hasSearchWithAdd, hasUserIcon, hasCamera } = this.props;
+    const { hasBack, navTitle, subTitle, messageCount, hasSearchWithAdd, hasUserIcon, hasCamera, hasPostButton } = this.props;
 
     // 左边是否有返回
     let leftSection = null;
@@ -84,11 +84,27 @@ export default class NavigationBar extends Component {
           <View style={styles.singleIcon}>
             <TouchableHighlight
               onPress={this.props.handleIconPress}
+              style={styles.singleIconTouch}
             >
               <Icon name='ios-camera' size={33} color='white' />
             </TouchableHighlight>
           </View>
         )
+    } else if (hasPostButton) {
+      rightSection = (
+        <View style={styles.singleIcon}>
+          <TouchableHighlight
+            onPress={this.props.handlePost}
+            style={styles.singleIconTouch}
+          >
+            <Text
+              style={{
+                color: '#fff'
+              }}
+            >Post</Text>
+          </TouchableHighlight>
+        </View>
+      )
     }
 
 
@@ -120,8 +136,9 @@ const styles = StyleSheet.create({
   },
   navRight: {
     flex: 1,
-    justifyContent: 'center',
-    paddingRight: 15,
+    justifyContent: 'flex-end',
+    flexDirection: 'row',
+    // paddingRight: 15,
   },
   navText: {
     color: 'white',
@@ -130,6 +147,7 @@ const styles = StyleSheet.create({
   },
   searchWithAdd: {
     flexDirection: 'row',
+    flex: 1,
   },
   navIconWrap: {
     flex: 1,
@@ -164,6 +182,14 @@ const styles = StyleSheet.create({
     color: 'white'
   },
   singleIcon: {
-    alignItems: 'flex-end'
+    alignItems: 'center',
+    width: '50%',
+    justifyContent: 'center',
+  },
+  singleIconTouch: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   }
 })

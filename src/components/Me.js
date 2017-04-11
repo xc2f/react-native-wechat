@@ -32,8 +32,6 @@ class Me extends Component {
   }
 
   render() {
-    console.log(this.state.userData);
-
     return (
       <View style={styles.container}>
         <View style={[styles.section, styles.section1]}>

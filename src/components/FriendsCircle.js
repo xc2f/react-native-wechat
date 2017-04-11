@@ -7,6 +7,7 @@ import ImagePicker from 'react-native-image-picker';
 import Statusbar from './StatusBar';
 import NavigationBar from './NavigationBar';
 import FriendsCircleModal from './FriendsCircleModal';
+import newsEdit from './newsEdit';
 
 var options = {
   title: '选择照片',
@@ -20,17 +21,25 @@ var options = {
 };
 
 class FriendsCircle extends Component {
+
   constructor(props) {
     super(props);
+
     this.state = {
+      // 顶部banner
       bannerImg: 'xx',
+      // modal显示
       modalVisible: false,
+      // 头像源
       avatarSource: null,
+      // 改变顶部banner的modal
       changeBannerModal: false,
+      // 发布新消息的modal
       postNewsModal: false,
     }
     // this._callIamgePicker.bind(this);
     this._selectBannerImg = this._selectBannerImg.bind(this);
+    this._postHandle = this._postHandle.bind(this);
   }
 
 
@@ -54,7 +63,7 @@ class FriendsCircle extends Component {
     this.props.navigator.pop();
   }
 
-  _onCameraIconPress() {
+  _onCameraIconPress(idx) {
     this.setState({
       modalVisible: true,
       postNewsModal: true,
@@ -124,6 +133,37 @@ class FriendsCircle extends Component {
     });
   }
 
+  _postHandle(idx) {
+    // 0是第一行拍摄，1是第二行从相册选择
+      this.setState({
+        modalVisible: false,
+        postNewsModal: false,
+      })
+      // console.log(idx);
+      clearTimeout(_timeout)
+    if (idx === 0) {
+      // Open Image Library:
+      var _timeout = setTimeout(function() {
+        ImagePicker.launchCamera(options, (response)  => {
+          console.log('camera');
+        });
+      }, 500);
+    } else if (idx === 1) {
+      // Open Image Library:
+      var _timeout = setTimeout(function() {
+        ImagePicker.launchImageLibrary(options, (response)  => {
+
+          if (!response.didCancel) {
+            this.props.navigator.push({
+              component: newsEdit,
+              args: {res: response}
+            })
+          }
+        });
+      }.bind(this), 500);
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -148,11 +188,11 @@ class FriendsCircle extends Component {
           elements={[
             {
               title: '拍摄',
-              handle: ()=>{},
+              handle: this._postHandle,
             },
             {
               title: '从相册选择',
-              handle: ()=>{},
+              handle: this._postHandle,
             }
           ]}
         />

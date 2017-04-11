@@ -37,7 +37,7 @@ export default class EntryRow extends Component {
     return (
       <TouchableHighlight
         onPress={this.props.handleClick}
-        underlayColor='#ddd'
+        underlayColor='#ccc'
         style={styles.touch}
       >
         <View style={styles.rowConatiner}>

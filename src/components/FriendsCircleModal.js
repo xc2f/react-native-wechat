@@ -40,29 +40,29 @@ class FriendsCircle extends Component {
               </TouchableWithoutFeedback>
             </View>
 
-            <View
-              style={styles.modalTouch}
-            >
             {
               this.props.elements.map((item, idx) => {
 
                 return (
-                  <TouchableHighlight
-                    underlayColor='#ddd'
-                    onPress={item.handle.bind(null, idx)}
+                  <View
+                    style={styles.modalTouch}
                     key={idx}
-                    style={styles.touchContent}
                   >
-                    <View>
-                      <Text
-                        style={styles.modalText}
-                      >{item.title}</Text>
-                    </View>
-                  </TouchableHighlight>
+                    <TouchableHighlight
+                      underlayColor='#ddd'
+                      onPress={item.handle.bind(null, idx)}
+                      style={styles.touchContent}
+                    >
+                      <View>
+                        <Text
+                          style={styles.modalText}
+                        >{item.title}</Text>
+                      </View>
+                    </TouchableHighlight>
+                  </View>
                 )
               })
             }
-            </View>
 
             {/*下部空白*/}
             <View
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
   },
   modalShade: {
     width: '100%',
-    flex: 10,
+    flex: 7,
   },
   shadeTouch: {
     width: '100%',
@@ -111,11 +111,13 @@ const styles = StyleSheet.create({
   },
   modalTouch: {
     backgroundColor: '#fff',
-    width: '50%',
+    width: '70%',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 3,
+    // borderRadius: 3,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee'
   },
   touchContent: {
     width: '100%',
