@@ -9,6 +9,8 @@ import NavigationBar from './NavigationBar';
 import FriendsCircleModal from './FriendsCircleModal';
 import newsEdit from './newsEdit';
 
+import PostLists from './FriendCirclePosts';
+
 var options = {
   title: '选择照片',
   takePhotoButtonTitle: '拍照',
@@ -36,6 +38,9 @@ class FriendsCircle extends Component {
       changeBannerModal: false,
       // 发布新消息的modal
       postNewsModal: false,
+
+      // posts list
+      newPost: null,
     }
     // this._callIamgePicker.bind(this);
     this._selectBannerImg = this._selectBannerImg.bind(this);
@@ -135,7 +140,9 @@ class FriendsCircle extends Component {
 
   _receivePost(data){
     // receive new post
-    console.log(data);
+    this.setState({
+      newPost: data,
+    })
 
   }
 
@@ -241,7 +248,9 @@ class FriendsCircle extends Component {
             </View>
 
             {/*post lists*/}
-            {/*<PostLists />*/}
+            <PostLists
+              newPost={this.state.newPost}
+            />
         </View>
       </View>
     );
