@@ -9,8 +9,6 @@ import Modal from './FriendsCircleModal';
 import ImagePicker from 'react-native-image-picker';
 import Row from './entryRow';
 import SingleImgPage from './SingleImgPage';
-// load baidumap
-
 
 var options = {
   title: '选择照片',
@@ -37,6 +35,8 @@ class newEditPage extends Component {
 
       // 获取到定位
       freshLocation: false,
+
+      textinputValue: '',
     }
     // 将前一步选择的图片存到数组
     this.state.imgs.push(this.props.res)
@@ -50,6 +50,12 @@ class newEditPage extends Component {
     this._latitude = 'unknow';
     this._longitude = 'unkonw';
     this._location = 'unknow';
+
+    // 输入的值
+    this._textinput = null;
+
+    // 内容详情
+    this._content = {};
   }
 
   _onBackPress() {
@@ -66,7 +72,6 @@ class newEditPage extends Component {
     this.setState({
       modalVisible: false,
     })
-
     clearTimeout(_timeout)
     if (idx === 0) {
       // Open Image Library:
@@ -99,7 +104,69 @@ class newEditPage extends Component {
   }
 
   _post() {
-    alert('post!');
+
+    this._content.text = this.state.textinputValue;
+    this._content.imgs = this.state.imgs;
+    this._content.location = this._location;
+    let date = new Date();
+    let year = date.getFullYear();
+    let month = date.getMonth()+1<10 ? '0'+(date.getMonth()+1) : date.getMonth()+1;
+    let day = date.getDate()<10 ? '0'+date.getDate() : date.getDate();
+    let hour = date.getHours()<10 ? '0'+date.getHours() : date.getHours();
+    let minute = date.getMinutes()<10 ? '0'+date.getMinutes() : date.getMinutes();
+    let seconds = date.getSeconds()<10 ? '0'+date.getSeconds() : date.getSeconds();
+    // 遇到位数为一位的时间就跪了
+    // let [ year, month, day, hour, minute, seconds ] = [ date.getFullYear(), date.getMonth()+1, date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds() ];
+    let time = `${year}-${month}-${day}T${hour}:${minute}:${seconds}`
+    // console.log(time);
+
+    this._content.time = time;
+    // console.log(this._content);
+
+
+    // console.log(this._content);
+
+    // 如果有postNews这个key, push； 否则，新建
+    // storage.load({
+    //   key: 'postNews'
+    // })
+    // .then(
+    //   res => {
+    //     // res.content.push(this._content);
+
+    // },
+    //   reject => {
+    //     console.log('error in reject');
+
+    //     // // 没有找到postNews key, 新建一个
+    //     // storage.save({
+    //     //   key: 'postNews',   // Note: Do not use underscore("_") in key!
+    //     //   rawData: {
+    //     //     content: [this._content],
+    //     //   },
+
+    //     //   // if not specified, the defaultExpires will be applied instead.
+    //     //   // if set to null, then it will never expire.
+    //     //   expires: null,
+    //     // });
+    // })
+
+        // storage.save({
+        //   key: 'postNews',   // Note: Do not use underscore("_") in key!
+        //   rawData: {
+        //     content: [this._content],
+        //   },
+
+        //   // if not specified, the defaultExpires will be applied instead.
+        //   // if set to null, then it will never expire.
+        //   expires: null,
+        // });
+
+    // console.log(storage);
+
+    // alert('post!');
+    this.props.transferPost(this._content);
+    this.props.navigator.pop();
   }
 
   _setLocation() {
@@ -195,6 +262,8 @@ class newEditPage extends Component {
                 multiline={true}
                 numberOfLines={3}
                 underlineColorAndroid='transparent'
+                onChangeText={value => this.setState({textinputValue: value})}
+                value={this.state.textinputValue}
                 style={styles.inputContent}
               />
             </View>

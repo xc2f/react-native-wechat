@@ -133,6 +133,12 @@ class FriendsCircle extends Component {
     });
   }
 
+  _receivePost(data){
+    // receive new post
+    console.log(data);
+
+  }
+
   _postHandle(idx) {
     // 0是第一行拍摄，1是第二行从相册选择
       this.setState({
@@ -156,7 +162,10 @@ class FriendsCircle extends Component {
           if (!response.didCancel) {
             this.props.navigator.push({
               component: newsEdit,
-              args: {res: response}
+              args: {
+                res: response,
+                transferPost: this._receivePost.bind(this),
+              }
             })
           }
         });
@@ -165,6 +174,7 @@ class FriendsCircle extends Component {
   }
 
   render() {
+
     return (
       <View style={styles.container}>
 
@@ -208,7 +218,6 @@ class FriendsCircle extends Component {
           />
         </View>
         <View style={styles.body}>
-          <ScrollView>
             <View style={styles.bannerImgWrap}>
               <TouchableWithoutFeedback
                 onPress={this._changeBanner.bind(this)}
@@ -230,7 +239,9 @@ class FriendsCircle extends Component {
                 />
               </View>
             </View>
-          </ScrollView>
+
+            {/*post lists*/}
+            {/*<PostLists />*/}
         </View>
       </View>
     );
