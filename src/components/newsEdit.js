@@ -8,7 +8,7 @@ import Modal from './FriendsCircleModal';
 
 import ImagePicker from 'react-native-image-picker';
 import Row from './entryRow';
-
+import SingleImgPage from './SingleImgPage';
 // load baidumap
 
 
@@ -28,15 +28,28 @@ class newEditPage extends Component {
     super(props);
     this.state = {
       modalVisible: false,
+      // 图片添加相关
       addImg: false,
       imgs: [],
+
+      // 定位的webview
+      loadWebView: false,
+
+      // 获取到定位
+      freshLocation: false,
     }
     // 将前一步选择的图片存到数组
     this.state.imgs.push(this.props.res)
 
     this._postHandle = this._postHandle.bind(this);
+    this._setLocation = this._setLocation.bind(this);
 
     this._webview = null;
+
+    // 经纬度
+    this._latitude = 'unknow';
+    this._longitude = 'unkonw';
+    this._location = 'unknow';
   }
 
   _onBackPress() {
@@ -90,28 +103,61 @@ class newEditPage extends Component {
   }
 
   _setLocation() {
-    fetch('http://api.map.baidu.com/geocoder/v2/?callback=renderReverse&location=39.983424,116.322987&output=json&pois=1&ak=416QLTjxtatADsMc6lUhR4fcaghoY8C1')
-      .then(res => {
-        // return res.json()
-        // console.log(res);
-
+    if (this.state.loadWebView) {
+      this._webview.postMessage('give me location')
+    } else {
+      this._location = '小伙子，关掉GPS';
+      this.setState({
+        freshLocation: true,
       })
-      .then(resJson => {
-        // console.log(resJson);
-      })
-
-    this._webview.postMessage('"Hello" from React Native!');
+    }
   }
 
   componentDidMount() {
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        this._latitude = position.coords.latitude;
+        this._longitude = position.coords.longitude;
+        // console.log(`http://api.map.baidu.com/geocoder/v2/?callback=renderReverse&location=${this._latitude},${this._longitude}&output=json&pois=1&ak=416QLTjxtatADsMc6lUhR4fcaghoY8C1`);
+
+        this.setState({
+          loadWebView: true,
+        })
+        // 无法自动调用
+        // this._webview.postMessage('give me location');
+      },
+      error => {
+        console.log(error);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 20000,
+        maximumAge: 1000
+      }
+    )
 
   }
 
   _onMessage(e) {
-    alert(1)
 
+    // this._location = e.nativeEvent.data.match(/formatted_address":"\S+?"/)[0].match(/:"\S+"/)[0].slice(2, -1);
+
+    this._location = JSON.parse(e.nativeEvent.data.replace(/<.*?>/, '').replace(/renderReverse.*?\(/, '').replace(/<.*?>/, '').slice(0, -1)).result.formatted_address;
+    this.setState({
+      freshLocation: true,
+    })
   }
 
+  // 点击图片详情页
+  _touchImg(idx) {
+    this.props.navigator.push({
+      component: SingleImgPage,
+      args: {
+        idx: idx,
+        imgs: this.state.imgs,
+      },
+    })
+  }
 
   render() {
     let { addImg, imgs } = this.state;
@@ -161,12 +207,16 @@ class newEditPage extends Component {
                     key={idx}
                     style={styles.thumbnailItem}
                   >
-                    <Image
-                      source={{
-                        uri: item.uri
-                      }}
-                      style={styles.thumbnailContent}
-                    />
+                    <TouchableHighlight
+                      onPress={this._touchImg.bind(this, idx)}
+                    >
+                      <Image
+                        source={{
+                          uri: item.uri
+                        }}
+                        style={styles.thumbnailContent}
+                      />
+                    </TouchableHighlight>
                   </View>
                 )
               })
@@ -199,14 +249,25 @@ class newEditPage extends Component {
 
             </View>
           </View>
-          <View style={styles.location}>
+          {this.state.freshLocation ?
+            <View style={styles.location}>
+              <Row
+                iconName='md-pin'
+                iconColor='#ddd'
+                title={this._location}
+                handleClick={this._setLocation}
+              />
+            </View>
+            :
+            <View style={styles.location}>
               <Row
                 iconName='md-pin'
                 iconColor='#ddd'
                 title='所在位置'
-                handleClick={this._setLocation.bind(this)}
+                handleClick={this._setLocation}
               />
-          </View>
+            </View>
+          }
 
           <View style={styles.bottomControl}>
             <View style={styles.rowSection}>
@@ -232,13 +293,22 @@ class newEditPage extends Component {
           <View
             style={styles.bbottom}
           >
-          <WebView
-            source={{
-              uri: 'http://api.map.baidu.com/geocoder/v2/?callback=renderReverse&location=39.983424,116.322987&output=json&pois=1&ak=416QLTjxtatADsMc6lUhR4fcaghoY8C1'
-            }}
-            ref={webview => { this._webview = webview; }}
-            onMessage={this._onMessage.bind(this)}
-          />
+          {this.state.loadWebView ?
+            <WebView
+              source={{
+                uri: `http://api.map.baidu.com/geocoder/v2/?callback=renderReverse&location=${this._latitude},${this._longitude}&output=json&pois=1&ak=416QLTjxtatADsMc6lUhR4fcaghoY8C1`
+              }}
+              ref={webview => { this._webview = webview; }}
+              onMessage={this._onMessage.bind(this)}
+              injectedJavaScript="document.addEventListener('message', function(){window.postMessage(document.body.innerHTML)});"
+              style={{
+                flex: 0,
+              }}
+            />
+            :
+            <View />
+          }
+
           </View>
         </View>
       </View>

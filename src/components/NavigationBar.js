@@ -9,7 +9,7 @@ export default class NavigationBar extends Component {
   }
 
   render() {
-    const { hasBack, navTitle, subTitle, messageCount, hasSearchWithAdd, hasUserIcon, hasCamera, hasPostButton } = this.props;
+    const { hasBack, navTitle, subTitle, messageCount, hasSearchWithAdd, hasUserIcon, hasCamera, hasPostButton, hasDeleteIcon } = this.props;
 
     // 左边是否有返回
     let leftSection = null;
@@ -102,6 +102,21 @@ export default class NavigationBar extends Component {
                 color: '#fff'
               }}
             >Post</Text>
+          </TouchableHighlight>
+        </View>
+      )
+    } else if (hasDeleteIcon) {
+      rightSection = (
+        <View style={styles.singleIcon}>
+          <TouchableHighlight
+            onPress={this.props.handleDelete}
+            style={styles.singleIconTouch}
+          >
+            <Text
+              style={{
+                color: '#fff'
+              }}
+            >Delete</Text>
           </TouchableHighlight>
         </View>
       )
