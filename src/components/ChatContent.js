@@ -121,7 +121,7 @@ export default class FarmChildView extends React.Component {
          if (this.listHeight && this.footerY &&this.footerY>this.listHeight) {
            {/*var scrollDistance = this.listHeight - this.footerY;
            this._listView.scrollTo({y:-scrollDistance});*/}
-           this._listview.scrollToEnd();
+           this._listview.scrollToEnd({animated: false});
          }
        }}/>
     }
@@ -146,12 +146,23 @@ export default class FarmChildView extends React.Component {
     }
 
     _keyboardDidHide () {
+      // 避免收起键盘后底部空余一大片
+      this._listview.scrollToEnd();
+    }
+
+    componentWillReceiveProps() {
+      console.log(this.props.newMessage);
+
+      datas.push(this.props.newMessage);
+      this.setState({
+        dataSource: this.state.dataSource.cloneWithRows(datas),
+      })
 
     }
 
 
     render() {
-      alert(this.props.newMessage)
+      // console.log(this.props.newMessage)
         return (
             <View style={ styles.container }>
               <ListView

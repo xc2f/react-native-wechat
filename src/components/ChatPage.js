@@ -180,6 +180,7 @@ export default class ChatPage extends Component {
                 </View>
               </View>
           </View>
+          <KeyboardSpacer />
         </View>
     )
   }

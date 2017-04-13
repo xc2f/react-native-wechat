@@ -7,8 +7,8 @@ import ListViewForHome from './ListViewForHome';
 
 // const FETCH_URL = 'http://192.168.0.104:8080/WeChat/findall/find.spring';
 // const FETCH_URL = 'http://localhost:17685/index.html';
-const FETCH_URL = 'http://192.168.0.102:3000';
-// const FETCH_URL = 'http://192.168.229.132:3000';
+// const FETCH_URL = 'http://192.168.0.102:3000';
+const FETCH_URL = 'http://192.168.229.132:3000';
 
 // var myHeaders = new Headers({
 //   'Content-Type': 'text/html'
