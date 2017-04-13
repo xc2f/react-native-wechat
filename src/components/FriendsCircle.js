@@ -41,6 +41,8 @@ class FriendsCircle extends Component {
 
       // posts list
       newPost: null,
+
+      userData: null,
     }
     // this._callIamgePicker.bind(this);
     this._selectBannerImg = this._selectBannerImg.bind(this);
@@ -54,7 +56,8 @@ class FriendsCircle extends Component {
     })
     .then( res => {
       this.setState({
-        bannerImg: res.data[0].avatar
+        bannerImg: res.data[0].avatar,
+        userData: res.data,
       })
 
     })
@@ -159,8 +162,17 @@ class FriendsCircle extends Component {
       var _timeout = setTimeout(function() {
         ImagePicker.launchCamera(options, (response)  => {
           console.log('camera');
+          if (!response.didCancel) {
+            this.props.navigator.push({
+              component: newsEdit,
+              args: {
+                res: response,
+                transferPost: this._receivePost.bind(this),
+              }
+            })
+          }
         });
-      }, 500);
+      }.bind(this), 500);
     } else if (idx === 1) {
       // Open Image Library:
       var _timeout = setTimeout(function() {
@@ -225,6 +237,7 @@ class FriendsCircle extends Component {
           />
         </View>
         <View style={styles.body}>
+          <ScrollView>
             <View style={styles.bannerImgWrap}>
               <TouchableWithoutFeedback
                 onPress={this._changeBanner.bind(this)}
@@ -250,7 +263,9 @@ class FriendsCircle extends Component {
             {/*post lists*/}
             <PostLists
               newPost={this.state.newPost}
+              userData={this.state.userData}
             />
+          </ScrollView>
         </View>
       </View>
     );

@@ -123,6 +123,8 @@ class newEditPage extends Component {
     this._content.time = time;
     // console.log(this._content);
 
+    this._content.postId = Math.random();
+
 
     // console.log(this._content);
 

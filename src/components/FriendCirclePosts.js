@@ -52,9 +52,19 @@ class FirendCirclePosts extends Component {
 
   componentWillReceiveProps() {
     // 发布新校消息返回后，如果接收到props的变化通知，更新state，并写入到本地存储
-    if (this.props.newPost) {
+    console.log(this.props.newPost);
+
+    const { newPost } = this.props;
+
+    // 只有在以下情况下进入执行
+    //   1，有新消息（必须）
+    //   2，数组长度为0（可选，发表第一篇消息的时候用到）
+    //   3，新消息的postId与上一篇消息的不同（可选，防止多次推入同一篇消息）
+    if ( newPost && ( this._list.length === 0 || newPost.postId !== this._list[0].postId)) {
+      console.log('ininin');
+
       const newList = this._list;
-      newList.unshift(this.props.newPost);
+      newList.unshift(newPost);
 
       storage.save({
         key: 'postNews',   // Note: Do not use underscore("_") in key!
@@ -70,15 +80,24 @@ class FirendCirclePosts extends Component {
   }
 
   _renderRow(data) {
-    console.log('imgs' + data.imgs.length);
+
+    const userData = this.props.userData;
+    const idx = Math.floor(Math.random()*userData.length);
 
     return (
       <View style={styles.container}>
-        <View style={styles.avatar}></View>
+        <View style={styles.avatarWrap}>
+          <Image
+            source={{
+              uri: userData[idx].avatar
+            }}
+            style={styles.avatar}
+          />
+        </View>
         <View style={styles.postWrap}>
-          <Text style={styles.userName}>user</Text>
+          <Text style={styles.userName}>{userData[idx].userName}</Text>
           <Text style={styles.postContent}>{data.text}</Text>
-          <View style={[styles.imgs, styles.imgWrap2]}>
+          <View style={[styles.imgs, styles['imgWrap' + data.imgs.length]]}>
             {data.imgs.map((item, idx) => {
               return (
                 <Image
@@ -86,6 +105,7 @@ class FirendCirclePosts extends Component {
                   source={{
                     uri: item.uri
                   }}
+                  resizeMode='contain'
                   style={styles['imgs' + data.imgs.length]}
                 />
               )
@@ -93,7 +113,7 @@ class FirendCirclePosts extends Component {
           </View>
           <View style={styles.bottomInfo}>
             <Text style={styles.time}>{computeTime(data.time)}</Text>
-            <Text style={styles.location}>{data.location}</Text>
+            <Text style={styles.location}>{data.location === 'unknow' ? '' : data.location}</Text>
           </View>
         </View>
       </View>
@@ -110,8 +130,17 @@ class FirendCirclePosts extends Component {
     })
   }
 
+  _renderSeparator() {
+    return (
+      <View
+        key={Math.random()}
+        style={styles.division}
+      />
+    )
+  }
+
   render() {
-    console.log(this._list);
+    console.log(this.props);
 
     return (
       <View>
@@ -122,6 +151,7 @@ class FirendCirclePosts extends Component {
         <ListView
           dataSource={this.state.dataSource}
           renderRow={this._renderRow.bind(this)}
+          renderSeparator={this._renderSeparator.bind(this)}
           enableEmptySections={true}
         />
       </View>
@@ -132,16 +162,23 @@ class FirendCirclePosts extends Component {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
+    marginTop: 20,
+  },
+  avatarWrap: {
+    flex: 1.5,
+    alignItems: 'flex-end',
+    paddingRight: 15,
   },
   avatar: {
-    flex: 2,
+    width: 40,
+    height: 40,
   },
   postWrap: {
     flex: 8,
   },
   userName: {
-    color: '#50B8FB',
-    fontSize: 17,
+    color: '#022EBC',
+    fontSize: 15,
   },
   postContent: {
     marginTop: 5,
@@ -159,6 +196,7 @@ const styles = StyleSheet.create({
   },
   location: {
     flex: 7,
+    fontSize: 11,
     color: '#0079CB'
   },
   imgs: {
@@ -168,13 +206,30 @@ const styles = StyleSheet.create({
     width: '90%',
     height: 200,
   },
-  imgWrpa2: {
+  imgWrap2: {
     flexDirection: 'row',
+    marginRight: '5%',
   },
   imgs2: {
     flex: 1,
     height: 100,
-    // marginRight: '5%',
+    marginRight: '5%',
+  },
+  imgWrap3: {
+    flexDirection: 'row',
+    marginRight: '8%',
+  },
+  imgs3: {
+    flex: 1,
+    height: 70,
+    marginRight: '2%',
+  },
+  division: {
+    height: .5,
+    width: '100%',
+    backgroundColor: '#ddd',
+    marginTop: 10,
+    marginBottom: 10,
   }
 })
 
