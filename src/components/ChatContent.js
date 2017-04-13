@@ -113,12 +113,15 @@ export default class FarmChildView extends React.Component {
   	}
 
     myRenderFooter(e){
+
+      // 通过在footer渲染一个无高度的view，获取其y轴坐标，使进入后保持在页面底部
       return <View onLayout={(e)=> {
          this.footerY= e.nativeEvent.layout.y;
-
+         {/*console.log(this.footerY, this.listHeight);*/}
          if (this.listHeight && this.footerY &&this.footerY>this.listHeight) {
-           var scrollDistance = this.listHeight - this.footerY;
-           this.refs._listView.scrollTo({y:-scrollDistance});
+           {/*var scrollDistance = this.listHeight - this.footerY;
+           this._listView.scrollTo({y:-scrollDistance});*/}
+           this._listview.scrollToEnd();
          }
        }}/>
     }
@@ -138,12 +141,11 @@ export default class FarmChildView extends React.Component {
     }
 
     _keyboardDidShow () {
-      console.log(this);
+
 
     }
 
     _keyboardDidHide () {
-      console.log(this);
 
     }
 
@@ -153,7 +155,7 @@ export default class FarmChildView extends React.Component {
             <View style={ styles.container }>
               <ListView
                 ref={el => this._listview = el}
-                onLayout={(e)=>{this.listHeight = e.nativeEvent;}}
+                onLayout={(e)=>{this.listHeight = e.nativeEvent.layout.height;}}
                 dataSource={this.state.dataSource}
                 renderRow={this.renderEveryData.bind(this)}
                 renderFooter={this.myRenderFooter.bind(this)}
