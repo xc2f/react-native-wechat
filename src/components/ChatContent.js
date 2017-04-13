@@ -141,8 +141,8 @@ export default class FarmChildView extends React.Component {
     }
 
     _keyboardDidShow () {
-
-
+      // 键盘起来后拉到底部
+      this._listview.scrollToEnd();
     }
 
     _keyboardDidHide () {
