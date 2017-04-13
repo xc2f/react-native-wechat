@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, StyleSheet, TextInput, TouchableHighlight, Platform, ListView, Keyboard } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TextInput, TouchableHighlight, Platform, ListView, Keyboard, Alert } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Ionicons'
 import NavigationBar from './NavigationBar';
@@ -15,12 +15,15 @@ export default class ChatPage extends Component {
     this.state = {
       voiceInput: false,
       faceShow: false,
-      moreFuncShow: false,
-      voiceTextStatus: '按住 说话'
+      moreFuncShow: true,
+      voiceTextStatus: '按住 说话',
+      inputValue: '',
+      newMessage: '',
     }
     this._onVoiceChange = this._onVoiceChange.bind(this);
     this._onVoicePress = this._onVoicePress.bind(this);
     this._onFaceShow = this._onFaceShow.bind(this);
+    this._textinput = null;
   }
 
   _onBackPress() {
@@ -47,8 +50,37 @@ export default class ChatPage extends Component {
       })
   }
 
+  // 输入文字后，发送按钮的切换
+  _handleInputValue(value) {
+    if (value == '') {
+      this.setState({
+        inputValue: '',
+        moreFuncShow: true,
+      })
+    } else {
+      this.setState({
+        inputValue: value,
+        moreFuncShow: false,
+      })
+    }
+  }
 
+  // 发送按钮处理
+  _handleInputPost() {
+      if(this.state.inputValue.trim().length <= 0){
+        Alert.alert('提示', '输入的内容不能为空');
+        return;
+      }
+      this.setState({
+        newMessage: this.state.inputValue,
+      })
 
+      this._textinput.clear();
+      this.setState({
+        inputValue: '',
+        moreFuncShow: true,
+      })
+  }
 
 
   render() {
@@ -70,7 +102,7 @@ export default class ChatPage extends Component {
 
               <View style={styles.body}>
                 {/*<ScrollView>*/}
-                    <ChatContent />
+                    <ChatContent newMessage={this.state.newMessage} />
                 {/*</ScrollView>*/}
               </View>
               <View style={styles.inputArea}>
@@ -99,6 +131,9 @@ export default class ChatPage extends Component {
                     :
                       (
                         <TextInput
+                          ref={el => this._textinput = el}
+                          onChangeText={this._handleInputValue.bind(this)}
+                          value={this.state.inputValue}
                           underlineColorAndroid='green'
                           style={{
                             flex: 1,
@@ -122,9 +157,26 @@ export default class ChatPage extends Component {
                   </TouchableHighlight>
                 </View>
                 <View style={styles.moreIcon}>
-                  <TouchableHighlight>
-                    <Icon name='md-add' size={30} color='gray' />
-                  </TouchableHighlight>
+                  {this.state.moreFuncShow ?
+                    <TouchableHighlight>
+                      <Icon name='md-add' size={30} color='gray' />
+                    </TouchableHighlight>
+                  :
+                    <TouchableHighlight
+                      onPress={this._handleInputPost.bind(this)}
+                      underlayColor='transparent'
+                    >
+                      <Text
+                        style={{
+                          backgroundColor: 'green',
+                          color: '#fff',
+                          padding: 5,
+                          borderRadius: 3,
+                        }}
+                      >发送</Text>
+                    </TouchableHighlight>
+                  }
+
                 </View>
               </View>
           </View>

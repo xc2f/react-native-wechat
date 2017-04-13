@@ -151,6 +151,7 @@ export default class FarmChildView extends React.Component {
 
 
     render() {
+      alert(this.props.newMessage)
         return (
             <View style={ styles.container }>
               <ListView
