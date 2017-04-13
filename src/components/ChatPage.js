@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, StyleSheet, TextInput, TouchableHighlight, Platform, ListView, Keyboard, Alert } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TextInput, TouchableHighlight, Platform, ListView, Keyboard, Alert, Switch } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Ionicons'
 import NavigationBar from './NavigationBar';
@@ -18,12 +18,51 @@ export default class ChatPage extends Component {
       moreFuncShow: true,
       voiceTextStatus: '按住 说话',
       inputValue: '',
-      newMessage: '',
+      dataSource: new ListView.DataSource({
+        rowHasChanged: (row1, row2) => row1 !== row2,
+      }),
+      isMe: true,
     }
     this._onVoiceChange = this._onVoiceChange.bind(this);
     this._onVoicePress = this._onVoicePress.bind(this);
     this._onFaceShow = this._onFaceShow.bind(this);
     this._textinput = null;
+
+
+    this.datas =[
+      {
+        isMe:true,
+        talkContent:'talk show! talk show! talk show!',
+        time: '12:03',
+      },
+      {
+        isMe:false,
+        talkContent:'talk show! talk show! ',
+        time: '12:05'
+      },
+        {
+        isMe:false,
+        talkContent:'talk show! talk show! ',
+        time: '12:07'
+      },
+        {
+        isMe:false,
+        talkContent:'talk show! talk show! ',
+        time: '12:08'
+      },
+        {
+        isMe:false,
+        talkContent:'talk show! talk show! ',
+        time: '12:10'
+      }
+    ];
+
+  }
+
+  componentDidMount() {
+    this.setState({
+      dataSource: this.state.dataSource.cloneWithRows(this.datas),
+    })
   }
 
   _onBackPress() {
@@ -71,15 +110,29 @@ export default class ChatPage extends Component {
         Alert.alert('提示', '输入的内容不能为空');
         return;
       }
+      var time = new Date();
+      this.datas.push({
+        isMe: this.state.isMe,
+        talkContent: this.state.inputValue,
+        time: time.getHours() + ':' + time.getMinutes(),
+      })
+
       this.setState({
-        newMessage: this.state.inputValue,
+        dataSource: this.state.dataSource.cloneWithRows(this.datas),
       })
 
       this._textinput.clear();
+
       this.setState({
         inputValue: '',
         moreFuncShow: true,
       })
+  }
+
+  _toggleSwitch() {
+    this.setState({
+      isMe: !this.state.isMe,
+    })
   }
 
 
@@ -102,9 +155,19 @@ export default class ChatPage extends Component {
 
               <View style={styles.body}>
                 {/*<ScrollView>*/}
-                    <ChatContent newMessage={this.state.newMessage} />
+                    <ChatContent dataSource={this.state.dataSource} />
                 {/*</ScrollView>*/}
               </View>
+
+              <View style={styles.switch}>
+                <Switch
+                  ref={el => this._switch = el}
+                  value={this.state.isMe}
+                  onValueChange={this._toggleSwitch.bind(this)}
+                  tintColor='#007ACC'
+                />
+              </View>
+
               <View style={styles.inputArea}>
                 <View style={styles.inputSourcesIcon}>
                   <TouchableHighlight
@@ -241,5 +304,10 @@ const styles = StyleSheet.create({
   moreIcon: {
     flex: 2,
     alignItems: 'center',
+  },
+  switch: {
+    position: 'absolute',
+    left: 10,
+    bottom: 70,
   },
 })

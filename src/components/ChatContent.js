@@ -15,71 +15,9 @@ import {
  } from 'react-native';
 
 
-var datas =[
-	{
-    isMe:false,
-    talkContent:'最近在学习React Native哦！',
-	},
-	{
-    isMe:true,
-    talkContent:'听说是个跨平台开发原生App的开源引擎',
-	},
-  {
-    isMe:false,
-    talkContent:'嗯啊，很不错，可以尝试下吧。过了这段时间继续研究UE去了。唉～技术出身，就是放不下技术呀～',
-  },
-  {
-    isMe:false,
-    talkContent:'感觉编不下去对话了呀......感觉编不下去对话了呀......感觉编不下去对话了呀......感觉编不下去对话了呀......',
-  },
-  {
-    isMe:true,
-    talkContent:'无语！',
-  },
-  {
-    isMe:false,
-    talkContent:'自说自话，好难！随便补充点字数吧，嗯 就酱紫 :) ',
-  },
-  {
-    isMe:true,
-    talkContent:'感觉编不下去对话了呀......感觉编不下去对话了呀..',
-  },
-  {
-    isMe:false,
-    talkContent:'GG,思密达编不下去了!',
-  },
-  {
-    isMe:true,
-    talkContent:'talk show! talk show! talk show!',
-  },
-  {
-    isMe:false,
-    talkContent:'talk show! talk show! ',
-  },
-    {
-    isMe:false,
-    talkContent:'talk show! talk show! ',
-  },
-    {
-    isMe:false,
-    talkContent:'talk show! talk show! ',
-  },
-    {
-    isMe:false,
-    talkContent:'talk show! talk show! ',
-  }
-];
-
-
 export default class FarmChildView extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-          inputContentText:'',
-          dataSource: new ListView.DataSource({
-            rowHasChanged: (row1, row2) => row1 !== row2,
-          }),
-        };
         this.listHeight = 0;
         this.footerY = 0;
         this._listview = null;
@@ -87,27 +25,29 @@ export default class FarmChildView extends React.Component {
         this._keyboardDidHide = this._keyboardDidHide.bind(this);
     }
 
-    componentDidMount() {
-        this.setState({
-          dataSource: this.state.dataSource.cloneWithRows(datas)
-        });
-    }
+    // componentDidMount() {
+    //     this.setState({
+    //       dataSource: this.state.dataSource.cloneWithRows(datas)
+    //     });
+    // }
     renderEveryData(eData) {
   		return (
   			<View style={{flexDirection:'row',alignItems: 'center'}}>
-          {/*<Image
-            source={eData.isMe==true? null:require('./res/headIcon/ox1.png')}
+          <Image
+            source={eData.isMe==true? null:require('../config/happy.png')}
             style={eData.isMe==true?null:styles.talkImg}
-          />*/}
+          />
   				<View style={eData.isMe==true?styles.talkViewRight:styles.talkView}>
+            {eData.isMe==true? <Text style={[styles.time, styles.timeRight]}>{eData.time}</Text> : <View />}
             <Text style={ styles.talkText }>
             		  {eData.talkContent}
             </Text>
+            {eData.isMe==true? <View /> : <Text style={[styles.time, styles.timeLeft]}>{eData.time}</Text>}
   				</View>
-          {/*<Image
-            source={eData.isMe==true? require('./res/headIcon/ox2.png') :null}
+          <Image
+            source={eData.isMe==true? require('../config/mb.png') :null}
             style={eData.isMe==true?styles.talkImgRight:null}
-          />*/}
+          />
   			</View>
   		);
   	}
@@ -142,22 +82,17 @@ export default class FarmChildView extends React.Component {
 
     _keyboardDidShow () {
       // 键盘起来后拉到底部
-      this._listview.scrollToEnd();
+      // 加入判断防止内容不够高时被强行拉到底部，上面空余
+      if (this.listHeight && this.footerY &&this.footerY>this.listHeight) {
+        this._listview.scrollToEnd();
+      }
     }
 
     _keyboardDidHide () {
       // 避免收起键盘后底部空余一大片
-      this._listview.scrollToEnd();
-    }
-
-    componentWillReceiveProps() {
-      console.log(this.props.newMessage);
-
-      datas.push(this.props.newMessage);
-      this.setState({
-        dataSource: this.state.dataSource.cloneWithRows(datas),
-      })
-
+      if (this.listHeight && this.footerY &&this.footerY>this.listHeight) {
+        this._listview.scrollToEnd();
+      }
     }
 
 
@@ -168,7 +103,7 @@ export default class FarmChildView extends React.Component {
               <ListView
                 ref={el => this._listview = el}
                 onLayout={(e)=>{this.listHeight = e.nativeEvent.layout.height;}}
-                dataSource={this.state.dataSource}
+                dataSource={this.props.dataSource}
                 renderRow={this.renderEveryData.bind(this)}
                 renderFooter={this.myRenderFooter.bind(this)}
               />
@@ -181,6 +116,7 @@ var styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#EEEEEE',
+    marginTop: 15,
   },
 
   talkView: {
@@ -188,17 +124,17 @@ var styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
     flexDirection: 'row',
-    padding: 12,
+    padding: 10,
     borderRadius:5,
     marginLeft:5,
-    marginRight:55,
-    marginBottom:15
+    marginRight:100,
+    marginBottom:30
   },
   talkImg: {
     height: 40,
     width: 40,
     marginLeft:10,
-    marginBottom:10
+    marginBottom:30
     },
   talkText: {
     flex: 1,
@@ -213,14 +149,28 @@ var styles = StyleSheet.create({
     justifyContent: 'flex-end',
     padding: 10,
     borderRadius:5,
-    marginLeft:55,
+    marginLeft:100,
     marginRight:5,
-    marginBottom:10
+    marginBottom:30
   },
   talkImgRight: {
     height: 40,
     width: 40,
     marginRight:10,
-    marginBottom:10
-    },
+    marginBottom:30
+  },
+  time: {
+    position: 'relative',
+    fontSize: 12,
+    color: '#999',
+    alignSelf: 'flex-end',
+    top: 10,
+    backgroundColor: 'transparent',
+  },
+  timeLeft: {
+    left: 50,
+  },
+  timeRight: {
+    right: 50,
+  },
 });
