@@ -229,6 +229,7 @@ class newEditPage extends Component {
   }
 
   render() {
+
     let { addImg, imgs } = this.state;
     return (
       <View style={styles.container}>

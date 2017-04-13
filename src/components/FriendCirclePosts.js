@@ -52,7 +52,7 @@ class FirendCirclePosts extends Component {
 
   componentWillReceiveProps() {
     // 发布新校消息返回后，如果接收到props的变化通知，更新state，并写入到本地存储
-    console.log(this.props.newPost);
+    // console.log(this.props.newPost);
 
     const { newPost } = this.props;
 
@@ -61,7 +61,6 @@ class FirendCirclePosts extends Component {
     //   2，数组长度为0（可选，发表第一篇消息的时候用到）
     //   3，新消息的postId与上一篇消息的不同（可选，防止多次推入同一篇消息）
     if ( newPost && ( this._list.length === 0 || newPost.postId !== this._list[0].postId)) {
-      console.log('ininin');
 
       const newList = this._list;
       newList.unshift(newPost);
@@ -140,8 +139,6 @@ class FirendCirclePosts extends Component {
   }
 
   render() {
-    console.log(this.props);
-
     return (
       <View>
         <Button

@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, StyleSheet, TextInput, TouchableHighlight, Platform } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TextInput, TouchableHighlight, Platform, ListView, Keyboard } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Ionicons'
 import NavigationBar from './NavigationBar';
 import Statusbar from './StatusBar';
+
+import ChatContent from './ChatContent';
+
+import KeyboardSpacer from 'react-native-keyboard-spacer';
 
 export default class ChatPage extends Component {
   constructor(props) {
@@ -44,6 +48,9 @@ export default class ChatPage extends Component {
   }
 
 
+
+
+
   render() {
     const { data } = this.props;
 
@@ -58,28 +65,13 @@ export default class ChatPage extends Component {
               handleBackPress={this._onBackPress.bind(this)}
             />
           </View>
+
           <View style={styles.main}>
-            <View style={styles.body}>
-              <ScrollView
-                keyboardDismissMode='on-drag'
-                contentOffset={{
-                  x: 0,
-                  y: 100
-                }}
-                style={{
-                  height: 1000,
-                  backgroundColor: '#eee',
-                  flex: 1,
-                }}
-              >
-                <Text
-                  style={{
-                    backgroundColor: '#eee',
-                    textAlign: 'center',
-                    height: 800,
-                  }}
-                >any body here?</Text>
-              </ScrollView>
+
+              <View style={styles.body}>
+                {/*<ScrollView>*/}
+                    <ChatContent />
+                {/*</ScrollView>*/}
               </View>
               <View style={styles.inputArea}>
                 <View style={styles.inputSourcesIcon}>
@@ -95,7 +87,7 @@ export default class ChatPage extends Component {
                   </TouchableHighlight>
                 </View>
                 <View style={styles.inputSources}>
-                  <TouchableHighlight>
+                  {/*<TouchableHighlight>*/}
                     { this.state.voiceInput ?
                       ( <TouchableHighlight
                           underlayColor='#eee'
@@ -105,14 +97,17 @@ export default class ChatPage extends Component {
                           <Text style={styles.inputSourcesText}>{this.state.voiceTextStatus}</Text>
                         </TouchableHighlight> )
                     :
-                      ( <TextInput
+                      (
+                        <TextInput
                           underlineColorAndroid='green'
                           style={{
-                            width: '100%'
+                            flex: 1,
+                            width: '100%',
                           }}
-                      /> )
+                        />
+                       )
                     }
-                  </TouchableHighlight>
+                  {/*</TouchableHighlight>*/}
                 </View>
                 <View style={styles.faceIcon}>
                   <TouchableHighlight
@@ -144,7 +139,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   nav: {
-    flex: 1,
+    // flex: 1,
+    height: 70,
     paddingTop: Platform.OS === 'ios' ? 20 : 17,
     backgroundColor: '#313436',
   },
@@ -153,9 +149,11 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 20,
+    backgroundColor: '#eee',
   },
   inputArea: {
-    flex: 2,
+    // flex: 2,
+    height: 50,
     flexDirection: 'row',
     alignItems: 'center',
   },
